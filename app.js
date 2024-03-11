@@ -53,6 +53,7 @@ function calculate() {
         return;
     }
     let result = Calculator.operate(variable1, variable2, operator);
+    result = Math.round(result * 1000) / 1000
     if (result !== null) {
         updateDisplay(result);
         variable1 = result;
