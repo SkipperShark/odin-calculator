@@ -1,42 +1,73 @@
 let variable1 = null;
 let operator = null;
 let variable2 = null;
-let displayValue = null;
 
-let operands = ["AC", "/", "*", "-", "+"];
-let numbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
+let operands = ["/", "*", "-", "+"];
+let numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 
 let buttons = document.querySelectorAll(".button");
 let output = document.querySelector("#output");
 let debugButton = document.querySelector("#debug");
 
 function handleOperandInput(operand) {
-    console.log("----------------");
-    console.log("entered handleOperandInput");
 
-    operator = operand;
+    if (operator !== null) {
+        calculate();
+    }
+
+    if (variable1 !== null) {
+        operator = operand;
+    }
 }
 
 function handleNumberInput(numberInput) {
 
-    if (variable2 === null) {
-        if (variable1 === null) {
-            variable1 = numberInput;
+    if (variable1 === null) {
+        variable1 = numberInput;
+        updateDisplay(variable1);
+    }
+    else {
+        if (operator !== null) {
+            if (variable2 === null) {
+                variable2 = numberInput;
+                updateDisplay(variable2);
+            }
+            else {
+                variable2 += numberInput;
+                updateDisplay(variable2);
+            }
         }
-        else if (typeof (variable1) === "string") {
+        else {
             variable1 += numberInput;
+            updateDisplay(variable1);
         }
     }
-    else
-
-        updateDisplay(variable1);
-}
-
-function handleEqualInput() {
-
 }
 
 
+function calculate() {
+    if (variable1 === null || operator === null || variable2 === null) return;
+    if (parseInt(variable1) >= 0 && parseInt(variable2) === 0) {
+        alert("good job, you just destroyed the universe");
+        clear();
+        return;
+    }
+    let result = Calculator.operate(variable1, variable2, operator);
+    if (result !== null) {
+        updateDisplay(result);
+        variable1 = result;
+        operator = null;
+        variable2 = null;
+    }
+}
+
+function clear() {
+    variable1 = null;
+    operator = null;
+    variable2 = null;
+    updateDisplay("0");
+    return
+}
 
 
 function updateDisplay(newValue) {
@@ -45,11 +76,16 @@ function updateDisplay(newValue) {
 
 
 class Calculator {
+    static operate(val1, val2, operand) {
+        [val1, val2] = [parseInt(val1), parseInt(val2)];
+        if (operand === "+") return this.add(val1, val2);
+        if (operand === "-") return this.subtract(val1, val2);
+        if (operand === "*") return this.multiply(val1, val2);
+        if (operand === "/") return this.divide(val1, val2);
+        return;
+    }
     static add(val1, val2) {
         return val1 + val2;
-    }
-    static operate(va1, val2, operand) {
-        return;
     }
     static subtract(val1, val2) {
         return val1 - val2;
@@ -70,13 +106,14 @@ buttons.forEach((button) => {
             let targetElementText = event.target.textContent;
             if (operands.includes(targetElementText)) handleOperandInput(targetElementText);
             else if (numbers.includes(targetElementText)) handleNumberInput(targetElementText);
-            else if (targetElementText === "") handleEqualInput();
+            else if (targetElementText === "=") calculate();
+            else if (targetElementText === "AC") clear();
             return
         })
 })
 
 debugButton.addEventListener("click", (event) => {
-    console.log({ variable1, variable2, operator, displayValue })
+    console.log({ variable1, variable2, operator })
 })
 
 console.log("script loaded");

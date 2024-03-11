@@ -14,4 +14,14 @@
     flex: 1 0 20%;
     padding: 5px;
     margin: 5px;
+    border: 2px solid white;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    transition: transform 0.1s;
+}
+
+.operand {
+    background-color: navy;
 }
